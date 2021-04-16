@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strconv"
 
-	//"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -46,6 +45,16 @@ func returnAllBookings(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(bookings)
 }
 
+func updateBooking(w http.ResponseWriter, r *http.Request) {
+	reqBody, _ := ioutil.ReadAll(r.Body)
+	var booking Booking
+	json.Unmarshal(reqBody, &booking) //todo
+
+	db.Model(&booking).Updates(&booking)
+	fmt.Println("Endpoint Hit: returnAllBookings")
+	json.NewEncoder(w).Encode(booking)
+}
+
 func handleRequests() {
 	log.Println("Starting development server at http://127.0.0.1:10000/")
 	log.Println("Quit the server with CONTROL-C.")
@@ -55,6 +64,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/new-booking", createNewBooking).Methods("POST")
 	myRouter.HandleFunc("/all-bookings", returnAllBookings).Methods("GET")
 	myRouter.HandleFunc("/booking/{id}", returnSingleBooking).Methods("GET")
+	myRouter.HandleFunc("/update-booking/{id}", updateBooking).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":10000", myRouter))
 }
