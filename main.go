@@ -48,10 +48,10 @@ func returnAllBookings(w http.ResponseWriter, r *http.Request) {
 func updateBooking(w http.ResponseWriter, r *http.Request) {
 	reqBody, _ := ioutil.ReadAll(r.Body)
 	var booking Booking
-	json.Unmarshal(reqBody, &booking) //todo
+	json.Unmarshal(reqBody, &booking)
 
 	db.Model(&booking).Updates(&booking)
-	fmt.Println("Endpoint Hit: returnAllBookings")
+	fmt.Println("Endpoint Hit: updateBooking")
 	json.NewEncoder(w).Encode(booking)
 }
 
