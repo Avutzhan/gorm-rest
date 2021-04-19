@@ -64,7 +64,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/new-booking", createNewBooking).Methods("POST")
 	myRouter.HandleFunc("/all-bookings", returnAllBookings).Methods("GET")
 	myRouter.HandleFunc("/booking/{id}", returnSingleBooking).Methods("GET")
-	myRouter.HandleFunc("/update-booking/{id}", updateBooking).Methods("POST")
+	myRouter.HandleFunc("/update-booking", updateBooking).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":10000", myRouter))
 }

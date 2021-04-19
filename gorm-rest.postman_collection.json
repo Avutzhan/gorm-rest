@@ -1,0 +1,125 @@
+{
+	"info": {
+		"_postman_id": "b6130063-dcd3-4876-88f7-1e902fccaa98",
+		"name": "gorm-rest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://127.0.0.1:10000/new-booking",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"user\":\"test\",\"members\":7}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:10000/booking/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "10000",
+					"path": [
+						"booking",
+						"1"
+					],
+					"query": [
+						{
+							"key": "user",
+							"value": "test",
+							"disabled": true
+						},
+						{
+							"key": "members",
+							"value": "test",
+							"disabled": true
+						}
+					]
+				},
+				"description": "pass json as request"
+			},
+			"response": []
+		},
+		{
+			"name": "http://127.0.0.1:10000/all-bookings",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:10000/all-bookings",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "10000",
+					"path": [
+						"all-bookings"
+					]
+				},
+				"description": "get all bookings"
+			},
+			"response": []
+		},
+		{
+			"name": "http://127.0.0.1:10000/booking/1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:10000/booking/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "10000",
+					"path": [
+						"booking",
+						"1"
+					]
+				},
+				"description": "get booking by id"
+			},
+			"response": []
+		},
+		{
+			"name": "http://127.0.0.1:10000/update-booking",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"id\": 1, \"user\":\"mest\",\"members\":10}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:10000/update-booking",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "10000",
+					"path": [
+						"update-booking"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
