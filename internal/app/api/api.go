@@ -14,7 +14,7 @@ import (
 
 	//models
 	"gorm-rest/pkg/model/booking"
-	"gorm-rest/pkg/model/history" //TO DO
+	"gorm-rest/pkg/model/history"
 	"gorm-rest/pkg/model/schema"  //TO DO
 	"gorm-rest/pkg/model/swagger" //TO DO
 )
@@ -30,6 +30,7 @@ func Start() {
 	if fconf.DatabaseMigration() {
 		fmigrate.Run(
 			booking.Booking{},
+			history.History{},
 		)
 	}
 

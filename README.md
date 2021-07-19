@@ -28,10 +28,13 @@ The application is a simple REST API server that will provide endpoints to CRUD 
     * Logging [Doc](https://github.com/rs/zerolog)
     * Makefile
     * One Entry Point
+    * Database Migrations
+        * for simple stuff use gorm automigrate
+        * for complicated stuff use other migrate libs like [gorm-migrate](https://github.com/golang-migrate/migrate)
 * CORS
 * Profiling ::TO DO
-* Swagger ::TO DO
-* History ::TO DO
+* Swagger ::TO DO Last
+* History / user logging
 * Schema ::TO DO
 
 ### Errors

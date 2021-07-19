@@ -14,8 +14,11 @@ import (
 )
 
 type Booking struct {
-	User    string `json:"user"`
-	Members int    `json:"members"`
+	ID        int       `json:"id" gorm:"primary_key" schema:"method:get,post,put"`
+	User      string    `json:"user" gorm:"type:varchar(100)"`
+	Members   int       `json:"members" gorm:"type:varchar(100)"`
+	CreatedAt time.Time `json:"-"`
+	UpdatedAt time.Time `json:"-"`
 }
 
 func (Booking) DisplayName() string {
@@ -36,10 +39,10 @@ func (b Booking) ValidateUpdate() interface{} {
 
 func App() *fiber.App {
 	app := fiber.New()
-	app.Get("", List)       //tested http://127.0.0.1:8787/v1/football/booking
-	app.Get("/:id", Select) //tested http://127.0.0.1:8787/v1/football/booking/21
-	app.Post("", Create)    //tested http://127.0.0.1:8787/v1/football/booking
-	app.Put("/:id", Update) //tested http://127.0.0.1:8787/v1/football/booking/21
+	app.Get("", List)
+	app.Get("/:id", Select)
+	app.Post("", Create)
+	app.Put("/:id", Update)
 	return app
 }
 

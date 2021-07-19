@@ -1,7 +1,6 @@
 package history
 
 import (
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"gorm-rest/pkg/ftools/fdb"
 	"gorm-rest/pkg/ftools/flog"
@@ -10,11 +9,9 @@ import (
 )
 
 type History struct {
-	ID        string    `json:"id" gorm:"type:uuid;default:uuid_generate_v4()" schema:"method:get,post,put"`
-	Email     string    `json:"email" gorm:"type:varchar(100)"`
+	ID        int       `json:"id" gorm:"primary_key" schema:"method:get,post,put"`
 	Model     string    `json:"model" gorm:"type:varchar(40)"`
 	Action    string    `json:"action" gorm:"type:varchar(15)"`
-	ModelID   string    `json:"model_id" gorm:"type:varchar(36)"`
 	CreatedAt time.Time `json:"-"`
 	UpdatedAt time.Time `json:"-"`
 }
@@ -33,12 +30,10 @@ type Statistic struct {
 func New(c *fiber.Ctx) error {
 	defer func(c *fiber.Ctx) {
 		if c.Response().StatusCode() == fiber.StatusOK {
-			h := History{Email: string(c.Request().Header.Peek("X-User-Email")), Action: string(c.Request().Header.Method()), ModelID: c.Params("id")}
+			h := History{Action: string(c.Request().Header.Method())}
 			_ = h
 			p := string(c.Request().URI().Path())
-			if h.ModelID != "" {
-				p = strings.ReplaceAll(p, fmt.Sprintf("/%s", h.ModelID), "")
-			}
+
 			pSlice := strings.Split(p, "/")
 			if len(pSlice) > 1 {
 				h.Model = pSlice[len(pSlice)-1]
