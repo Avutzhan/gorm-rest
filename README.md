@@ -18,16 +18,22 @@ The application is a simple REST API server that will provide endpoints to CRUD 
 
 ###About the application
 
-* New Directory Structure
-* Go Fiber
-* Gorm
-* Request Validation
+* New Directory Structure / [Best Practices](https://github.com/golang-standards/project-layout)
+* Go Fiber / use [Doc](https://docs.gofiber.io/api/middleware)
+* Gorm / use [Doc](https://gorm.io/docs/update.html)
+* Request Validation / use [Doc](https://github.com/go-ozzo/ozzo-validation)
 * Environment
-    * Env file
+    * Env file [github](https://github.com/Entrio/subenv)
     * Config
-    * Logging
+    * Logging [Doc](https://github.com/rs/zerolog)
     * Makefile
     * One Entry Point
 * CORS
-* Profiling
-* Swagger
+* Profiling ::TO DO
+* Swagger ::TO DO
+* History ::TO DO
+* Schema ::TO DO
+
+### Errors
+
+* database error utf8 problem [solution](https://stackoverflow.com/questions/1008287/illegal-mix-of-collations-mysql-error)
