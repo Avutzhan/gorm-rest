@@ -13,3 +13,21 @@ Tags
 ###About the application
 
 The application is a simple REST API server that will provide endpoints to CRUD operations on Football Ground Booking records.
+
+# Gorm-Rest-Fiber
+
+###About the application
+
+* New Directory Structure
+* Go Fiber
+* Gorm
+* Request Validation
+* Environment
+    * Env file
+    * Config
+    * Logging
+    * Makefile
+    * One Entry Point
+* CORS
+* Profiling
+* Swagger

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	validation "github.com/go-ozzo/ozzo-validation"
-	"github.com/go-ozzo/ozzo-validation/is"
 	"github.com/gofiber/fiber/v2"
 	"gorm-rest/pkg/ftools/fdb"
 	"gorm-rest/pkg/ftools/flog"
@@ -15,7 +14,6 @@ import (
 )
 
 type Booking struct {
-	ID      string `json:"id"`
 	User    string `json:"user"`
 	Members int    `json:"members"`
 }
@@ -38,34 +36,24 @@ func (b Booking) ValidateUpdate() interface{} {
 
 func App() *fiber.App {
 	app := fiber.New()
-	app.Get("", List)
-	app.Get("/:id", ParamValidate, Select)
-	app.Post("", Create)
-	app.Put("/:id", ParamValidate, Update)
+	app.Get("", List)       //tested http://127.0.0.1:8787/v1/football/booking
+	app.Get("/:id", Select) //tested http://127.0.0.1:8787/v1/football/booking/21
+	app.Post("", Create)    //tested http://127.0.0.1:8787/v1/football/booking
+	app.Put("/:id", Update) //tested http://127.0.0.1:8787/v1/football/booking/21
 	return app
-}
-
-func ParamValidate(c *fiber.Ctx) error {
-	booking := Booking{ID: c.Params("id")}
-	if err := validation.ValidateStruct(&booking,
-		validation.Field(&booking.ID, validation.Required.Error("Значение обязательное"), is.UUIDv4.Error("Формат не верный")),
-	); err != nil {
-		flog.ErrorCtx(c).Interface("error", err).Msg("failed validation path param")
-
-		return c.Status(fiber.StatusBadRequest).JSON(err)
-	}
-	return c.Next()
 }
 
 func Select(c *fiber.Ctx) error {
 	var booking Booking
+
+	//выбираем бронь по приходящему айдишнику
 	if result := fdb.Client.Model(&booking).Where("id = ?", c.Params("id")).Take(&booking).Error; result != nil {
 		if errors.Is(result, gorm.ErrRecordNotFound) {
-			flog.WarnCtx(c).Err(result).Msg("city not found")
+			flog.WarnCtx(c).Err(result).Msg("booking not found")
 
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": "City не найден"})
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": "Booking не найден"})
 		}
-		flog.ErrorCtx(c).Err(result).Msg("failed find city")
+		flog.ErrorCtx(c).Err(result).Msg("failed find booking")
 
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Внутренние проблемы"})
 	}
@@ -74,16 +62,20 @@ func Select(c *fiber.Ctx) error {
 
 func List(c *fiber.Ctx) error {
 	var booking []Booking
-	if result := fdb.Client.Model(&Booking{}).Find(&booking).Error; result != nil {
-		flog.ErrorCtx(c).Err(result).Msg("error find all city")
 
-		return c.JSON(fiber.Map{"message": "Внутренняя ошибка поиска списка стран"})
+	//выводим в массиве все элементы брони
+	if result := fdb.Client.Model(&Booking{}).Find(&booking).Error; result != nil {
+		flog.ErrorCtx(c).Err(result).Msg("error find all booking")
+
+		return c.JSON(fiber.Map{"message": "Внутренняя ошибка поиска списка booking"})
 	}
 	return c.JSON(booking)
 }
 
 func Create(c *fiber.Ctx) error {
 	booking := new(Booking)
+
+	//проверка и валидация реквеста
 	if err := c.BodyParser(booking); err != nil {
 		flog.ErrorCtx(c).Err(err).Msg("failed parse create request")
 
@@ -95,23 +87,26 @@ func Create(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(result)
 	}
 
+	flog.ErrorCtx(c).Msg(booking.User)
+	//ищем дубликаты по имени
 	duplicate := new(Booking)
 	if result := fdb.Client.Model(duplicate).Where("user = ?", booking.User).Take(&duplicate).Error; result != nil {
 		if !errors.Is(result, gorm.ErrRecordNotFound) {
-			flog.ErrorCtx(c).Err(result).Msg("failed find duplicate")
+			flog.ErrorCtx(c).Err(result).Msg("failed find users duplicate")
 
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Внутрение проблемы"})
 		}
 	} else {
 		flog.WarnCtx(c).Str("error", "duplicate row").Msg("find duplicate")
 
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"name": "Такое значение уже есть"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"name": "Такой user уже есть"})
 	}
 
+	//если нет дубликатов то создаем бронь
 	if result := fdb.Client.Model(&booking).Create(&booking).Error; result != nil {
-		flog.ErrorCtx(c).Err(result).Msg("failed create new assignment")
+		flog.ErrorCtx(c).Err(result).Msg("failed create new Booking")
 
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Ошибка создания Country"})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Ошибка создания Booking"})
 	}
 
 	return c.JSON(booking)
@@ -119,6 +114,8 @@ func Create(c *fiber.Ctx) error {
 
 func Update(c *fiber.Ctx) error {
 	booking := new(Booking)
+
+	//проверка и валидация реквеста
 	if err := c.BodyParser(booking); err != nil {
 		flog.ErrorCtx(c).Err(err).Msg("failed parse create request")
 
@@ -130,21 +127,7 @@ func Update(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(result)
 	}
 
-	duplicate := new(Booking)
-	if result := fdb.Client.Model(duplicate).Where("user = ?", booking.User).Take(&duplicate).Error; result != nil {
-		if !errors.Is(result, gorm.ErrRecordNotFound) {
-			flog.ErrorCtx(c).Err(result).Msg("failed find duplicate")
-
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"message": "Внутрение проблемы"})
-		}
-	} else {
-		if c.Params("id") != duplicate.ID {
-			flog.WarnCtx(c).Str("error", "duplicate row").Msg("find duplicate")
-
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"name": "Такое значение уже есть"})
-		}
-	}
-
+	//Апдейтим бронь
 	if result := fdb.Client.Model(&booking).Where("id = ?", c.Params("id")).Updates(&booking).Take(&booking).Error; result != nil {
 		flog.ErrorCtx(c).Err(result).Msg("failed update assignment")
 

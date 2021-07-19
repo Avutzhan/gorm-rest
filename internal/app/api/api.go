@@ -1,17 +1,22 @@
 package api
 
 import (
+	//fiber cors profiling
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
+
+	//configs
 	"gorm-rest/pkg/ftools/fconf"
 	"gorm-rest/pkg/ftools/fdb"
 	"gorm-rest/pkg/ftools/flog"
 	"gorm-rest/pkg/ftools/fmigrate"
+
+	//models
 	"gorm-rest/pkg/model/booking"
-	"gorm-rest/pkg/model/history"
-	"gorm-rest/pkg/model/schema"
-	"gorm-rest/pkg/model/swagger"
+	"gorm-rest/pkg/model/history" //TO DO
+	"gorm-rest/pkg/model/schema"  //TO DO
+	"gorm-rest/pkg/model/swagger" //TO DO
 )
 
 func Start() {
